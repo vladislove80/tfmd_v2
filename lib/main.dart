@@ -50,6 +50,7 @@ class Application extends StatelessWidget {
               home: state is ShowPage && !state.isSplashPageShown
                   ? SplashPage()
                   : HomePage(),
+
             );
           },
         ));

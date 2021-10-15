@@ -14,24 +14,41 @@ class WeatherRepository {
   WeatherRepository(this._apiManager);
 
   final ApiManager _apiManager;
+  final Options options = Options(
+    method: 'GET',
+    contentType: 'application/json',
+    headers: {'X-RapidAPI-Host': HOST, 'X-RapidAPI-Key': KEY},
+  );
 
   Future<WeatherResponse> getWeatherForecast(
     double lat,
     double lng,
-    String countryWithCode,
   ) async {
     final response = await _apiManager.get(
       path: AppUrl.weatherUrl +
-          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS&countryWithCode=$countryWithCode',
-      options: Options(
-        method: 'GET',
-        contentType: 'application/json',
-        headers: {'X-RapidAPI-Host': HOST, 'X-RapidAPI-Key': KEY},
-      ),
+          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS',
+      options: options,
     );
 
-    if (response.data != null) {
-      return WeatherResponse.fromJson(response.data);
+    if (response.data != null && response.data.data != null) {
+      return WeatherResponse.fromJson(response.data.data);
+    }
+
+    throw response.error ?? Exception();
+  }
+
+  Future<WeatherResponse> getKyivWeatherForecast(
+    double lat,
+    double lng,
+  ) async {
+    final response = await _apiManager.get(
+      path: AppUrl.weatherUrl +
+          '?q=kyiv&id=2172797&lang=null&units=metric&mode=json',
+      options: options,
+    );
+
+    if (response.data != null && response.data.data != null) {
+      return WeatherResponse.fromJson(response.data.data);
     }
 
     throw response.error ?? Exception();

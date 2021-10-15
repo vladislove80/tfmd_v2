@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart';
-import 'package:location/location.dart';
 import 'package:tfmd_v2/data/location/location_repository.dart';
 import 'package:tfmd_v2/data/weather/weather_repository.dart';
 
@@ -13,13 +12,16 @@ class HomeInteractor {
     this._weatherManager,
   );
 
-  Future<LocationData?> getCurrentUserLocation() =>
-      _locationManager.getCurrentUserLocation();
-
   Future<void> getWeatherForecast() async {
-    final location = await getCurrentUserLocation();
-    var latitude = location?.latitude;
-    var longitude = location?.longitude;
-    if (latitude != null && longitude != null) await _weatherManager.getWeatherForecast(latitude, longitude, 'UA');
+    final location = await _locationManager.getCurrentUserLocation();
+    final latitude = location?.latitude;
+    final longitude = location?.longitude;
+    if (latitude != null && longitude != null) {
+      final city =
+          await _locationManager.getCurrentCity(latitude, longitude, 'ua');
+      if (city.isNotEmpty) city.first.locality;
+      final forecast =
+          await _weatherManager.getWeatherForecast(latitude, longitude);
+    }
   }
 }
