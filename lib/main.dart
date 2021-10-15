@@ -8,6 +8,7 @@ import 'package:tfmd_v2/flows/home_page/home_page.dart';
 import 'package:tfmd_v2/flows/splash_page/splash_page.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(Application());
 }
 
@@ -25,7 +26,9 @@ class Application extends StatelessWidget {
             return MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData(
-                primarySwatch: Colors.deepOrange,
+                primarySwatch: Colors.purple,
+                primaryColor: Colors.white,
+                fontFamily: 'Georgia',
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               localeResolutionCallback: (deviceLocale, supportedLocales) {
@@ -39,12 +42,12 @@ class Application extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: [
-                Locale('en', ''),
-                Locale('ru', ''),
+                Locale('en', 'GB'),
+                Locale('ru', 'US'),
               ],
               onGenerateRoute: (settings) => _router.onGenerateRoute(settings),
               debugShowCheckedModeBanner: false,
-              home: state is ShowPage && state.showSplashScreen
+              home: state is ShowPage && !state.isSplashPageShown
                   ? SplashPage()
                   : HomePage(),
             );
