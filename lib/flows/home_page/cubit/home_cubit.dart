@@ -9,7 +9,7 @@ class HomeCubit extends Cubit<HomeState> {
   final _interactor = GetIt.instance.get<HomeInteractor>();
 
   Future<void> init() async {
-    final location = await _interactor.getCurrentUserLocation();
-    print(location);
+    final location = await _interactor.getWeatherForecast();
+    print('location');
   }
 }
