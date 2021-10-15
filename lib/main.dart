@@ -4,8 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tfmd_v2/app/app_router.dart';
 import 'package:tfmd_v2/app/cubit/app_cubit.dart';
 import 'package:tfmd_v2/app/cubit/app_state.dart';
+import 'package:tfmd_v2/app/prefs/prefs.dart';
 import 'package:tfmd_v2/flows/home_page/home_page.dart';
 import 'package:tfmd_v2/flows/splash_page/splash_page.dart';
+import 'package:get_it/get_it.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,6 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Locale? myLocale;
     return BlocProvider.value(
         value: appCubit,
         child: BlocBuilder<AppCubit, AppState>(
@@ -32,9 +33,11 @@ class Application extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               localeResolutionCallback: (deviceLocale, supportedLocales) {
-                myLocale = deviceLocale;
-                print(myLocale?.countryCode);
-                print(myLocale?.languageCode);
+                var languageCode = deviceLocale?.languageCode;
+                if (languageCode != null) {
+                  final prefs = GetIt.instance.get<Prefs>();
+                  prefs.setCountryCode(languageCode);
+                }
               },
               localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
@@ -43,7 +46,7 @@ class Application extends StatelessWidget {
               ],
               supportedLocales: [
                 Locale('en', 'GB'),
-                Locale('ru', 'US'),
+                Locale('ru', 'Ru'),
               ],
               onGenerateRoute: (settings) => _router.onGenerateRoute(settings),
               debugShowCheckedModeBanner: false,

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 @lazySingleton
 class Prefs {
   static const SPLASH_SHOWN_KEY = 'is_splash_shown';
+  static const COUNTRY_CODE_KEY = 'country_code';
 
   Future<bool> setSplashPageIsShown() async {
     final _prefs = await SharedPreferences.getInstance();
@@ -22,6 +23,26 @@ class Prefs {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  Future<bool> setCountryCode(String countryCode) async {
+    try {
+      final _prefs = await SharedPreferences.getInstance();
+      return _prefs.setString(COUNTRY_CODE_KEY, countryCode);
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<String?> getCountryCode() async {
+    try {
+      final _prefs = await SharedPreferences.getInstance();
+      return _prefs.getString(COUNTRY_CODE_KEY);
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }
