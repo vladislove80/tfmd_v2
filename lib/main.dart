@@ -43,6 +43,7 @@ class Application extends StatelessWidget {
                 );
               },
               localizationsDelegates: [
+                ///todo add custom adapter for app strings
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,

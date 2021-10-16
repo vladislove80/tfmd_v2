@@ -97,6 +97,9 @@ class DayForecastHiveModel {
               night: e.night,
               evening: e.evening,
               morning: e.morning,
+              weatherIcon: e.weatherIcon,
+              weatherDescription: e.weatherDescription,
+              weatherMessage: e.weatherMessage,
               drTxt: e.drTxt,
             ),
           )

@@ -13,4 +13,5 @@ class AppString {
   static const pop = 'Probability of precipitation: ';
   static const hours = 'Hours';
   static const days = 'Days';
+  static const forecastIsEmpty = 'No weather forecasts';
 }

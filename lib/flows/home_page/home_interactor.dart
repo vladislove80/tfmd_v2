@@ -20,16 +20,22 @@ class HomeInteractor {
   Future<HomeModel?> getData({
     ForecastType type = ForecastType.DAYS_FORECAST,
   }) async {
-    var homeModel = await getHomeModalFromRemote(type: type);
     final db = GetIt.instance.get<HiveDataBase>();
-    if (homeModel != null) {
-      await db.saveHomeModel(
-        HiveDataBase.mapHomeToHive(homeModel),
-      );
-    } else {
-      final v = await db.getHomeModel();
+    try {
+      var homeModel = await getHomeModalFromRemote(type: type);
+
+      if (homeModel != null) {
+        await db.saveHomeModel(
+          HiveDataBase.mapHomeToHive(homeModel),
+        );
+      } else {
+        homeModel = await db.getHomeModel();
+      }
+      return homeModel;
+    } catch (e) {
+      print(e);
+      return await db.getHomeModel();
     }
-    return homeModel;
   }
 
   Future<HomeModel?> getHomeModalFromRemote({

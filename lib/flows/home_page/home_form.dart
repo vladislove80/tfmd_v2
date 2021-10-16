@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tfmd_v2/common/app_string.dart';
 import 'package:tfmd_v2/flows/home_page/cubit/home_cubit.dart';
 import 'package:tfmd_v2/flows/home_page/cubit/home_state.dart';
 import 'package:tfmd_v2/flows/home_page/model/forecast_type.dart';
@@ -101,24 +102,33 @@ class HomeForm extends StatelessWidget {
               body: SingleChildScrollView(
                 child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Column(
-                        children: [
-                          ...state.model?.dayForecast
-                                  ?.map(
-                                    (forecast) => Column(
-                                      children: [
-                                        const SizedBox(height: 12),
-                                        DayItem(forecast, state.type),
-                                      ],
-                                    ),
-                                  )
-                                  .toList() ??
-                              []
-                        ],
+                    if (state.model?.dayForecast?.isNotEmpty ?? false)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Column(
+                          children: [
+                            ...state.model?.dayForecast
+                                    ?.map(
+                                      (forecast) => Column(
+                                        children: [
+                                          const SizedBox(height: 12),
+                                          DayItem(forecast, state.type),
+                                        ],
+                                      ),
+                                    )
+                                    .toList() ??
+                                []
+                          ],
+                        ),
                       ),
-                    ),
+                    if (state.model?.dayForecast?.isEmpty ?? false)
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(
+                          child: Text(AppString.forecastIsEmpty),
+                        ),
+                      ),
                     if (state.isLoading)
                       Container(
                         width: MediaQuery.of(context).size.width,
