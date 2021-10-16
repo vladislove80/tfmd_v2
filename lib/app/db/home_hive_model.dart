@@ -28,7 +28,11 @@ class HomeHiveModel {
 @HiveType(typeId: 1)
 class DayForecastHiveModel {
   @HiveField(0)
-  final double? date;
+  final int? date;
+  @HiveField(14)
+  final int? sunrise;
+  @HiveField(15)
+  final int? sunset;
   @HiveField(1)
   final int? humidity;
   @HiveField(2)
@@ -36,17 +40,17 @@ class DayForecastHiveModel {
   @HiveField(3)
   final double? rain;
   @HiveField(4)
-  final double? day;
+  final int? day;
   @HiveField(6)
-  final double? min;
+  final int? min;
   @HiveField(7)
-  final double? max;
+  final int? max;
   @HiveField(8)
-  final double? night;
+  final int? night;
   @HiveField(9)
-  final double? evening;
+  final int? evening;
   @HiveField(10)
-  final double? morning;
+  final int? morning;
   @HiveField(11)
   final String? weatherMessage;
   @HiveField(12)
@@ -56,6 +60,8 @@ class DayForecastHiveModel {
 
   DayForecastHiveModel({
     this.date,
+    this.sunrise,
+    this.sunset,
     this.humidity,
     this.speed,
     this.rain,
@@ -77,6 +83,8 @@ class DayForecastHiveModel {
           ?.map(
             (e) => DayForecastHiveModel(
               date: e.date,
+              sunrise: e.sunrise,
+              sunset: e.sunset,
               humidity: e.humidity,
               speed: e.speed,
               rain: e.rain,

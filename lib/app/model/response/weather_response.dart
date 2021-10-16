@@ -49,7 +49,9 @@ class Coord {
 }
 
 class DayForecast {
-  final double? date;
+  final int? date;
+  final int? sunrise;
+  final int? sunset;
   final Temperature? temp;
   final int? humidity;
   final List<WeatherMessage>? weather;
@@ -58,6 +60,8 @@ class DayForecast {
 
   DayForecast({
     this.date,
+    this.sunrise,
+    this.sunset,
     this.temp,
     this.humidity,
     this.weather,
@@ -66,7 +70,9 @@ class DayForecast {
   });
 
   factory DayForecast.fromJson(Map<String, dynamic> json) => DayForecast(
-        date: json["date"],
+        date: json["dt"],
+        sunrise: json["sunrise"],
+        sunset: json["sunset"],
         temp: Temperature.fromJson(json["temp"]),
         humidity: json["humidity"],
         weather: json["weather"] == null
@@ -75,7 +81,7 @@ class DayForecast {
                 .map((e) => WeatherMessage.fromJson(e))
                 .toList(),
         speed: json["speed"],
-        rain: json["rain"],
+        rain: json["pop"],
       );
 }
 
@@ -115,7 +121,7 @@ class Temperature {
         min: json["min"],
         max: json["max"],
         night: json["night"],
-        evening: json["evening"],
-        morning: json["morning"],
+        evening: json["eve"],
+        morning: json["morn"],
       );
 }

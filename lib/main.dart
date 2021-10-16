@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,17 +29,18 @@ class Application extends StatelessWidget {
             return MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData(
-                primarySwatch: Colors.purple,
-                primaryColor: Colors.white,
+                primaryColorLight: Colors.purpleAccent,
+                primaryColorDark: Colors.deepPurple,
+                primaryColor: Colors.purple,
                 fontFamily: 'Georgia',
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               localeResolutionCallback: (deviceLocale, supportedLocales) {
                 var languageCode = deviceLocale?.languageCode;
-                if (languageCode != null) {
-                  final prefs = GetIt.instance.get<Prefs>();
-                  prefs.setCountryCode(languageCode);
-                }
+                final prefs = GetIt.instance.get<Prefs>();
+                prefs.setCountryCode(
+                  languageCode != null ? languageCode : 'ru',
+                );
               },
               localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
@@ -49,7 +49,7 @@ class Application extends StatelessWidget {
               ],
               supportedLocales: [
                 Locale('en', 'GB'),
-                Locale('ru', 'Ru'),
+                Locale('ru', 'RU'),
               ],
               onGenerateRoute: (settings) => _router.onGenerateRoute(settings),
               debugShowCheckedModeBanner: false,

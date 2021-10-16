@@ -27,7 +27,7 @@ class WeatherRepository {
   ) async {
     final response = await _apiManager.get(
       path: AppUrl.weatherUrl +
-          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS&countryWithCode=$countryWithCode',
+          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS&lang=$countryWithCode',
       options: options,
     );
 
@@ -43,7 +43,7 @@ class WeatherRepository {
   ) async {
     final response = await _apiManager.get(
       path: AppUrl.weatherUrl +
-          '?q=kyiv&id=2172797&lang=null&units=metric&mode=json&countryWithCode=$countryWithCode',
+          '?q=kyiv&id=2172797&lang=null&units=metric&mode=json&lang=$countryWithCode',
       options: options,
     );
 

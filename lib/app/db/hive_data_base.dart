@@ -16,6 +16,7 @@ class HiveDataBase {
 
   void _init() async {
     Hive.registerAdapter(HomeHiveModelAdapter());
+    Hive.registerAdapter(DayForecastHiveModelAdapter());
     box = await Hive.openBox<HomeHiveModel>(HOME_BOX);
   }
 

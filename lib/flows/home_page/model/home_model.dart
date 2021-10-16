@@ -25,15 +25,17 @@ class HomeModel {
 
           return DayForecastModel(
             date: e.date,
+            sunrise: e.sunrise,
+            sunset: e.sunset,
             humidity: e.humidity,
             speed: e.speed,
             rain: e.rain,
-            day: e.temp?.day,
-            min: e.temp?.min,
-            max: e.temp?.max,
-            night: e.temp?.night,
-            evening: e.temp?.evening,
-            morning: e.temp?.morning,
+            day: e.temp?.day?.round(),
+            min: e.temp?.min?.round(),
+            max: e.temp?.max?.round(),
+            night: e.temp?.night?.round(),
+            evening: e.temp?.evening?.round(),
+            morning: e.temp?.morning?.round(),
             weatherDescription: (isNotNullWeather) ? weather?.first.main : '',
             weatherMessage:
                 (isNotNullWeather) ? e.weather?.first.description : '',
@@ -49,40 +51,56 @@ class HomeModel {
           ?.map(
             (e) => DayForecastModel(
               date: e.date,
+              sunrise: e.sunrise,
+              sunset: e.sunset,
               humidity: e.humidity,
               speed: e.speed,
               rain: e.rain,
-              day: e.day,
-              min: e.min,
-              max: e.max,
-              night: e.night,
-              evening: e.evening,
-              morning: e.morning,
+              day: e.day?.round(),
+              min: e.min?.round(),
+              max: e.max?.round(),
+              night: e.night?.round(),
+              evening: e.evening?.round(),
+              morning: e.morning?.round(),
               weatherDescription: e.weatherDescription,
               weatherMessage: e.weatherMessage,
               weatherIcon: e.weatherIcon,
             ),
           )
           .toList();
+
+  String? getDateRange() {
+    final date1 = dayForecast?.first.date;
+    final date2 = dayForecast?.last.date;
+    if (date1 != null && date2 != null) {
+      var dateTime1 = DateTime.fromMillisecondsSinceEpoch(date1 * 1000);
+      var dateTime2 = DateTime.fromMillisecondsSinceEpoch(date2 * 1000);
+      return '${dateTime1.day}/${dateTime1.month} - ${dateTime2.day}/${dateTime2.month}';
+    }
+  }
 }
 
 class DayForecastModel {
-  final double? date;
+  final int? date;
+  final int? sunrise;
+  final int? sunset;
   final int? humidity;
   final double? speed;
   final double? rain;
-  final double? day;
-  final double? min;
-  final double? max;
-  final double? night;
-  final double? evening;
-  final double? morning;
+  final int? day;
+  final int? min;
+  final int? max;
+  final int? night;
+  final int? evening;
+  final int? morning;
   final String? weatherMessage;
   final String? weatherDescription;
   final String? weatherIcon;
 
   DayForecastModel({
     this.date,
+    this.sunrise,
+    this.sunset,
     this.humidity,
     this.speed,
     this.rain,
@@ -96,4 +114,11 @@ class DayForecastModel {
     this.weatherDescription,
     this.weatherIcon,
   });
+
+  String getDateLabel() {
+    var dateTime = date != null
+        ? DateTime.fromMillisecondsSinceEpoch(date! * 1000)
+        : DateTime.now();
+    return '${dateTime.day}/${dateTime.month}';
+  }
 }

@@ -35,7 +35,7 @@ class HomeInteractor {
     final longitude = location?.longitude;
 
     final prefs = GetIt.instance.get<Prefs>();
-    var localeIdentifier = await prefs.getCountryCode() ?? 'ua';
+    var localeIdentifier = await prefs.getCountryCode() ?? 'ru';
 
     if (latitude != null && longitude != null) {
       final city = await _locationManager.getCurrentCity(
