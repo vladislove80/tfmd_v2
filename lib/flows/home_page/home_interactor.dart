@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tfmd_v2/app/db/hive_data_base.dart';
 import 'package:tfmd_v2/app/prefs/prefs.dart';
 import 'package:tfmd_v2/data/location/location_repository.dart';
 import 'package:tfmd_v2/data/weather/weather_repository.dart';
@@ -15,24 +16,59 @@ class HomeInteractor {
     this._weatherManager,
   );
 
-  Future<HomeModel?> getWeather() async {
+  Future<HomeModel?> getData() async {
+    var homeModel = await getHomeModalFromRemote();
+    final db = GetIt.instance.get<HiveDataBase>();
+    if (homeModel != null) {
+      await db.saveHomeModel(
+        HiveDataBase.mapHomeToHive(homeModel),
+      );
+    } else {
+      final v = await db.getHomeModel();
+    }
+    return homeModel;
+  }
+
+  Future<HomeModel?> getHomeModalFromRemote() async {
     final location = await _locationManager.getCurrentUserLocation();
     final latitude = location?.latitude;
     final longitude = location?.longitude;
 
-    if (latitude != null && longitude != null) {
-      final prefs = GetIt.instance.get<Prefs>();
-      var localeIdentifier = await prefs.getCountryCode() ?? 'ua';
-      final city = await _locationManager.getCurrentCity(
-          latitude, longitude, localeIdentifier);
-      final forecast =
-          await _weatherManager.getWeatherForecast(latitude, longitude);
+    final prefs = GetIt.instance.get<Prefs>();
+    var localeIdentifier = await prefs.getCountryCode() ?? 'ua';
 
-      //todo save to db. check connectivity and return from db if needed
+    if (latitude != null && longitude != null) {
+      final city = await _locationManager.getCurrentCity(
+        latitude,
+        longitude,
+        localeIdentifier,
+      );
+
+      final weatherResponse = await _weatherManager.getWeatherForecast(
+        latitude,
+        longitude,
+        localeIdentifier,
+      );
+
       return HomeModel(
-        position: location,
+        latitude: latitude,
+        longitude: longitude,
         city: city.isNotEmpty ? city.first.locality : null,
-        forecast: forecast,
+        dayForecast: HomeModel.fromForecastResponse(
+          weatherResponse.forecastList,
+        ),
+      );
+    } else {
+      final weatherResponse =
+          await _weatherManager.getKyivWeatherForecast(localeIdentifier);
+
+      return HomeModel(
+        latitude: weatherResponse.city?.coord?.lat,
+        longitude: weatherResponse.city?.coord?.lon,
+        city: weatherResponse.city?.name,
+        dayForecast: HomeModel.fromForecastResponse(
+          weatherResponse.forecastList,
+        ),
       );
     }
   }

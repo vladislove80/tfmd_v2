@@ -16,7 +16,7 @@ class WeatherResponse {
         : null;
 
     return WeatherResponse(
-      city: json["name"],
+      city: City.fromJson(json["city"]),
       forecastList: forecastList,
     );
   }
@@ -31,7 +31,7 @@ class City {
 
   factory City.fromJson(Map<String, dynamic> json) => City(
         name: json["name"],
-        coord: json["coord"],
+        coord: Coord.fromJson(json["coord"]),
         country: json["country"],
       );
 }
@@ -50,10 +50,9 @@ class Coord {
 
 class DayForecast {
   final double? date;
-
-  final double? temp;
-  final double? humidity;
-  final WeatherMessage? weather;
+  final Temperature? temp;
+  final int? humidity;
+  final List<WeatherMessage>? weather;
   final double? speed;
   final double? rain;
 
@@ -68,9 +67,13 @@ class DayForecast {
 
   factory DayForecast.fromJson(Map<String, dynamic> json) => DayForecast(
         date: json["date"],
-        temp: json["temp"],
+        temp: Temperature.fromJson(json["temp"]),
         humidity: json["humidity"],
-        weather: json["weather"],
+        weather: json["weather"] == null
+            ? null
+            : (json["weather"] as List)
+                .map((e) => WeatherMessage.fromJson(e))
+                .toList(),
         speed: json["speed"],
         rain: json["rain"],
       );

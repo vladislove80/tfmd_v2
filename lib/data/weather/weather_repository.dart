@@ -23,10 +23,11 @@ class WeatherRepository {
   Future<WeatherResponse> getWeatherForecast(
     double lat,
     double lng,
+    String countryWithCode,
   ) async {
     final response = await _apiManager.get(
       path: AppUrl.weatherUrl +
-          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS',
+          '?lat=$lat&lon=$lng&cnt=$DAY_AMOUNT&units=$UNITS&countryWithCode=$countryWithCode',
       options: options,
     );
 
@@ -38,12 +39,11 @@ class WeatherRepository {
   }
 
   Future<WeatherResponse> getKyivWeatherForecast(
-    double lat,
-    double lng,
+    String countryWithCode,
   ) async {
     final response = await _apiManager.get(
       path: AppUrl.weatherUrl +
-          '?q=kyiv&id=2172797&lang=null&units=metric&mode=json',
+          '?q=kyiv&id=2172797&lang=null&units=metric&mode=json&countryWithCode=$countryWithCode',
       options: options,
     );
 

@@ -1,16 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tfmd_v2/app/app_router.dart';
 import 'package:tfmd_v2/app/cubit/app_cubit.dart';
 import 'package:tfmd_v2/app/cubit/app_state.dart';
 import 'package:tfmd_v2/app/prefs/prefs.dart';
 import 'package:tfmd_v2/flows/home_page/home_page.dart';
 import 'package:tfmd_v2/flows/splash_page/splash_page.dart';
-import 'package:get_it/get_it.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Hive.initFlutter();
   runApp(Application());
 }
 
@@ -53,7 +56,6 @@ class Application extends StatelessWidget {
               home: state is ShowPage && !state.isSplashPageShown
                   ? SplashPage()
                   : HomePage(),
-
             );
           },
         ));
