@@ -38,7 +38,7 @@ class DayForecastHiveModel {
   @HiveField(2)
   final double? speed;
   @HiveField(3)
-  final double? rain;
+  final double? pop;
   @HiveField(4)
   final int? day;
   @HiveField(6)
@@ -57,6 +57,8 @@ class DayForecastHiveModel {
   final String? weatherDescription;
   @HiveField(13)
   final String? weatherIcon;
+  @HiveField(16)
+  final String? drTxt;
 
   DayForecastHiveModel({
     this.date,
@@ -64,7 +66,7 @@ class DayForecastHiveModel {
     this.sunset,
     this.humidity,
     this.speed,
-    this.rain,
+    this.pop,
     this.day,
     this.min,
     this.max,
@@ -74,6 +76,7 @@ class DayForecastHiveModel {
     this.weatherMessage,
     this.weatherDescription,
     this.weatherIcon,
+    this.drTxt,
   });
 
   static List<DayForecastHiveModel>? fromModel(
@@ -87,13 +90,14 @@ class DayForecastHiveModel {
               sunset: e.sunset,
               humidity: e.humidity,
               speed: e.speed,
-              rain: e.rain,
+              pop: e.pop,
               day: e.day,
               min: e.min,
               max: e.max,
               night: e.night,
               evening: e.evening,
               morning: e.morning,
+              drTxt: e.drTxt,
             ),
           )
           .toList();

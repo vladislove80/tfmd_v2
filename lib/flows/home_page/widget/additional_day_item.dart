@@ -26,23 +26,25 @@ class AdditionalDayItem extends StatelessWidget {
             secondValue: (forecast.max?.toString() ?? '') + AppString.celsius,
           ),
           const SizedBox(height: 10),
-          TwoValueRow(
-            firstLabel: AppString.evening,
-            firstValue:
-                (forecast.evening?.toString() ?? '') + AppString.celsius,
-            secondLabel: AppString.morning,
-            secondValue:
-                (forecast.morning?.toString() ?? '') + AppString.celsius,
-          ),
-          const SizedBox(height: 10),
+          if (forecast.evening != null && forecast.morning != null)
+            TwoValueRow(
+              firstLabel: AppString.evening,
+              firstValue:
+                  (forecast.evening?.toString() ?? '') + AppString.celsius,
+              secondLabel: AppString.morning,
+              secondValue:
+                  (forecast.morning?.toString() ?? '') + AppString.celsius,
+            ),
+          if (forecast.evening != null && forecast.morning != null)
+            const SizedBox(height: 10),
           Text(
             '${AppString.speed}${forecast.speed}',
             style: textStyle,
           ),
-          if (forecast.rain != null) const SizedBox(height: 10),
-          if (forecast.rain != null)
+          if (forecast.pop != null) const SizedBox(height: 10),
+          if (forecast.pop != null)
             Text(
-              '${AppString.rain}${forecast.rain}',
+              '${AppString.pop}${forecast.pop}%',
               style: textStyle,
             ),
           const SizedBox(height: 10),

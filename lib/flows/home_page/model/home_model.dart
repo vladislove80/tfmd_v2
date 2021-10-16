@@ -1,5 +1,7 @@
+import 'package:intl/intl.dart';
 import 'package:tfmd_v2/app/db/home_hive_model.dart';
 import 'package:tfmd_v2/app/model/response/weather_response.dart';
+import 'package:tfmd_v2/flows/home_page/model/forecast_type.dart';
 
 class HomeModel {
   final double? latitude;
@@ -15,34 +17,42 @@ class HomeModel {
   });
 
   static List<DayForecastModel>? fromForecastResponse(
-    List<DayForecast>? forecastResponse,
-  ) =>
-      forecastResponse?.map(
-        (e) {
-          var weather = e.weather;
-          var isNotEmptyWeather = weather?.isNotEmpty;
-          var isNotNullWeather = isNotEmptyWeather ?? false;
+    List<DayForecast>? forecastResponse, {
+    required ForecastType type,
+  }) {
+    final isDailyForecastType = type == ForecastType.DAYS_FORECAST;
+    return forecastResponse?.map(
+      (e) {
+        var weather = e.weather;
+        var isNotEmptyWeather = weather?.isNotEmpty;
+        var isNotNullWeather = isNotEmptyWeather ?? false;
 
-          return DayForecastModel(
-            date: e.date,
-            sunrise: e.sunrise,
-            sunset: e.sunset,
-            humidity: e.humidity,
-            speed: e.speed,
-            rain: e.rain,
-            day: e.temp?.day?.round(),
-            min: e.temp?.min?.round(),
-            max: e.temp?.max?.round(),
-            night: e.temp?.night?.round(),
-            evening: e.temp?.evening?.round(),
-            morning: e.temp?.morning?.round(),
-            weatherDescription: (isNotNullWeather) ? weather?.first.main : '',
-            weatherMessage:
-                (isNotNullWeather) ? e.weather?.first.description : '',
-            weatherIcon: e.weather?.first.icon,
-          );
-        },
-      ).toList();
+        return DayForecastModel(
+          date: e.date,
+          sunrise: e.sunrise,
+          sunset: e.sunset,
+          humidity: isDailyForecastType ? e.humidity : e.main?.humidity,
+          speed: e.speed,
+          pop: e.pop,
+          day: isDailyForecastType
+              ? e.temp?.day?.round()
+              : e.main?.temp?.round(),
+          min:
+              isDailyForecastType ? e.temp?.min?.round() : e.main?.min?.round(),
+          max:
+              isDailyForecastType ? e.temp?.max?.round() : e.main?.max?.round(),
+          night: e.temp?.night?.round(),
+          evening: e.temp?.evening?.round(),
+          morning: e.temp?.morning?.round(),
+          weatherDescription: (isNotNullWeather) ? weather?.first.main : '',
+          weatherMessage:
+              (isNotNullWeather) ? e.weather?.first.description : '',
+          weatherIcon: e.weather?.first.icon,
+          drTxt: e.dtText,
+        );
+      },
+    ).toList();
+  }
 
   static List<DayForecastModel>? fromForecastHiveModel(
     List<DayForecastHiveModel>? forecastResponse,
@@ -55,7 +65,7 @@ class HomeModel {
               sunset: e.sunset,
               humidity: e.humidity,
               speed: e.speed,
-              rain: e.rain,
+              pop: e.pop,
               day: e.day?.round(),
               min: e.min?.round(),
               max: e.max?.round(),
@@ -86,7 +96,7 @@ class DayForecastModel {
   final int? sunset;
   final int? humidity;
   final double? speed;
-  final double? rain;
+  final double? pop;
   final int? day;
   final int? min;
   final int? max;
@@ -96,6 +106,7 @@ class DayForecastModel {
   final String? weatherMessage;
   final String? weatherDescription;
   final String? weatherIcon;
+  final String? drTxt;
 
   DayForecastModel({
     this.date,
@@ -103,7 +114,7 @@ class DayForecastModel {
     this.sunset,
     this.humidity,
     this.speed,
-    this.rain,
+    this.pop,
     this.day,
     this.min,
     this.max,
@@ -113,12 +124,18 @@ class DayForecastModel {
     this.weatherMessage,
     this.weatherDescription,
     this.weatherIcon,
+    this.drTxt,
   });
 
-  String getDateLabel() {
-    var dateTime = date != null
-        ? DateTime.fromMillisecondsSinceEpoch(date! * 1000)
-        : DateTime.now();
-    return '${dateTime.day}/${dateTime.month}';
+  String getDateLabel(ForecastType forecastType) {
+    if (ForecastType.DAYS_FORECAST == forecastType) {
+      var dateTime = date != null
+          ? DateTime.fromMillisecondsSinceEpoch(date! * 1000)
+          : DateTime.now();
+      return '${dateTime.day}/${dateTime.month}';
+    } else {
+      final parsedDate = drTxt != null ? DateTime.parse(drTxt!) : null;
+      return parsedDate == null ? '' : DateFormat('HH:mm').format(parsedDate);
+    }
   }
 }

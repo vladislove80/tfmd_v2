@@ -64,9 +64,11 @@ class DayForecastHiveModelAdapter extends TypeAdapter<DayForecastHiveModel> {
     };
     return DayForecastHiveModel(
       date: fields[0] as int?,
+      sunrise: fields[14] as int?,
+      sunset: fields[15] as int?,
       humidity: fields[1] as int?,
       speed: fields[2] as double?,
-      rain: fields[3] as double?,
+      pop: fields[3] as double?,
       day: fields[4] as int?,
       min: fields[6] as int?,
       max: fields[7] as int?,
@@ -82,15 +84,19 @@ class DayForecastHiveModelAdapter extends TypeAdapter<DayForecastHiveModel> {
   @override
   void write(BinaryWriter writer, DayForecastHiveModel obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.date)
+      ..writeByte(14)
+      ..write(obj.sunrise)
+      ..writeByte(15)
+      ..write(obj.sunset)
       ..writeByte(1)
       ..write(obj.humidity)
       ..writeByte(2)
       ..write(obj.speed)
       ..writeByte(3)
-      ..write(obj.rain)
+      ..write(obj.pop)
       ..writeByte(4)
       ..write(obj.day)
       ..writeByte(6)

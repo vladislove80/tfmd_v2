@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tfmd_v2/flows/home_page/cubit/home_cubit.dart';
 import 'package:tfmd_v2/flows/home_page/cubit/home_state.dart';
+import 'package:tfmd_v2/flows/home_page/model/forecast_type.dart';
 import 'package:tfmd_v2/flows/home_page/widget/day_item.dart';
 
 class HomeForm extends StatelessWidget {
@@ -11,10 +12,15 @@ class HomeForm extends StatelessWidget {
     return SafeArea(
       top: false,
       child: BlocListener<HomeCubit, HomeState>(
-        listener: (ctx, state) {},
+        listener: (ctx, state) {
+          if (state.errorMessage != null) {
+            //todo show error
+          }
+        },
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (ctx, state) {
             var dateRange = state.model?.getDateRange();
+            var primaryColorDark = Theme.of(context).primaryColorDark;
             return Scaffold(
               backgroundColor: Colors.grey[400],
               appBar: AppBar(
@@ -27,9 +33,11 @@ class HomeForm extends StatelessWidget {
                   child: CupertinoButton(
                     child: Icon(
                       Icons.my_location,
-                      color: Theme.of(context).primaryColorDark,
+                      color: primaryColorDark,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      //todo change location
+                    },
                   ),
                 ),
                 title: Column(
@@ -38,7 +46,7 @@ class HomeForm extends StatelessWidget {
                     Text(
                       state.model?.city ?? '',
                       style: Theme.of(context).textTheme.headline6?.copyWith(
-                            color: Theme.of(context).primaryColorDark,
+                            color: primaryColorDark,
                           ),
                     ),
                     if (dateRange != null) const SizedBox(height: 6),
@@ -46,39 +54,80 @@ class HomeForm extends StatelessWidget {
                       Text(
                         '$dateRange',
                         style: Theme.of(context).textTheme.caption?.copyWith(
-                              color: Theme.of(context)
-                                  .primaryColorDark
-                                  .withOpacity(0.7),
+                              color: primaryColorDark.withOpacity(0.7),
                             ),
                       ),
                   ],
                 ),
                 actions: [
-                  Icon(
-                    Icons.menu_rounded,
-                    color: Theme.of(context).primaryColorDark,
-                  ),
-                  const SizedBox(width: 30)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      DropdownButton<ForecastType>(
+                        value: state.type,
+                        style: TextStyle(color: Colors.green),
+                        iconEnabledColor: primaryColorDark,
+                        items: [
+                          ForecastType.DAYS_FORECAST,
+                          ForecastType.HOUR_FORECAST,
+                        ].map<DropdownMenuItem<ForecastType>>(
+                          (ForecastType value) {
+                            return DropdownMenuItem<ForecastType>(
+                              value: value,
+                              child: Text(
+                                value.label,
+                                style: TextStyle(color: primaryColorDark),
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        onChanged: (value) {
+                          if (value != null)
+                            BlocProvider.of<HomeCubit>(context)
+                                .switchForecastType(value);
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      //todo menu for sign in, theme changing
+                      Icon(
+                        Icons.menu_rounded,
+                        color: primaryColorDark,
+                      ),
+                      const SizedBox(width: 30),
+                    ],
+                  )
                 ],
               ),
               body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Column(
-                    children: [
-                      ...state.model?.dayForecast
-                              ?.map(
-                                (forecast) => Column(
-                                  children: [
-                                    const SizedBox(height: 12),
-                                    DayItem(forecast),
-                                  ],
-                                ),
-                              )
-                              .toList() ??
-                          []
-                    ],
-                  ),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        children: [
+                          ...state.model?.dayForecast
+                                  ?.map(
+                                    (forecast) => Column(
+                                      children: [
+                                        const SizedBox(height: 12),
+                                        DayItem(forecast, state.type),
+                                      ],
+                                    ),
+                                  )
+                                  .toList() ??
+                              []
+                        ],
+                      ),
+                    ),
+                    if (state.isLoading)
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             );

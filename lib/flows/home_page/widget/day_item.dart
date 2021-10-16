@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tfmd_v2/common/app_string.dart';
 import 'package:tfmd_v2/common/app_url.dart';
+import 'package:tfmd_v2/flows/home_page/model/forecast_type.dart';
 import 'package:tfmd_v2/flows/home_page/model/home_model.dart';
 import 'package:tfmd_v2/flows/home_page/widget/additional_day_item.dart';
 
 class DayItem extends StatefulWidget {
   final DayForecastModel? forecast;
+  final ForecastType forecastType;
 
-  DayItem(this.forecast);
+  DayItem(this.forecast, this.forecastType);
 
   @override
   _DayItemState createState() => _DayItemState();
@@ -39,7 +41,8 @@ class _DayItemState extends State<DayItem> {
                   Row(
                     children: [
                       Text(
-                        widget.forecast?.getDateLabel() ?? '',
+                        widget.forecast?.getDateLabel(widget.forecastType) ??
+                            '',
                         style: TextStyle(
                           color: Theme.of(context)
                               .primaryColorDark
@@ -59,17 +62,18 @@ class _DayItemState extends State<DayItem> {
                       const SizedBox(width: 10),
                       RichText(
                         text: TextSpan(
-                          text: '${widget.forecast?.day}${AppString.celsius}/',
+                          text: '${widget.forecast?.day}${AppString.celsius}',
                           style: textStyle.copyWith(fontSize: 21),
                           children: [
-                            TextSpan(
-                              text:
-                                  '${widget.forecast?.night}${AppString.celsius}',
-                              style: textStyle.copyWith(fontSize: 14),
-                            ),
+                            if (widget.forecast?.night != null)
+                              TextSpan(
+                                text:
+                                    '/${widget.forecast?.night}${AppString.celsius}',
+                                style: textStyle.copyWith(fontSize: 14),
+                              ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                   Row(

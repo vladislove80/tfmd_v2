@@ -10,5 +10,7 @@ class AppString {
   static const sunrise = 'Sunrise: ';
   static const sunset = 'Sunset: ';
   static const speed = 'Wind speed: ';
-  static const rain = 'Probability of precipitation: ';
+  static const pop = 'Probability of precipitation: ';
+  static const hours = 'Hours';
+  static const days = 'Days';
 }
